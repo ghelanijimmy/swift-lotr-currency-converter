@@ -12,6 +12,12 @@ struct ContentView: View {
     @State var leftAmount = ""
     @State var rightAmount = ""
     
+    @State var leftCurrency: Currency = .silverPiece
+    @State var rightCurrency: Currency = .goldPiece
+    
+    @State var showSelectCurrency: Bool = false
+    @State var showExchangeInfo: Bool = false
+    
     var body: some View {
         ZStack {
             //MARK: - BG Image
@@ -38,17 +44,23 @@ struct ContentView: View {
                         HStack {
                             
                             //MARK: - CURRENCY IMAGE
-                            Image(.silverpiece)
+                            Image(leftCurrency.image)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 33)
                             
                             //MARK: - CURENCY TEXT
-                            Text("Silver Piece")
+                            Text(leftCurrency.text)
                                 .font(.headline)
                                 .foregroundStyle(.white)
                         } // END CURENCY
                         .padding(.bottom, -5)
+                        .onTapGesture {
+                            showSelectCurrency.toggle()
+                        }
+                        .sheet(isPresented: $showSelectCurrency, content: {
+                            SelectCurrency(leftCurrency: $leftCurrency, rightCurrency: $rightCurrency)
+                        })
                         
                         //MARK: - TEXT FIELD
                         TextField("Amount", text: $leftAmount)
@@ -68,16 +80,22 @@ struct ContentView: View {
                         //MARK: - Currency
                         HStack {
                             //MARK: - CURENCY TEXT
-                            Text("Gold Piece")
+                            Text(rightCurrency.text)
                                 .font(.headline)
                                 .foregroundStyle(.white)
                             //MARK: - CURRENCY IMAGE
-                            Image(.goldpiece)
+                            Image(rightCurrency.image)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 33)
                         } // END CURRENCY
                         .padding(.bottom, -5)
+                        .onTapGesture {
+                            showSelectCurrency.toggle()
+                        }
+                        .sheet(isPresented: $showSelectCurrency, content: {
+                            SelectCurrency(leftCurrency: $leftCurrency, rightCurrency: $rightCurrency)
+                        })
                         
                         //MARK: - TEXT FIELD
                         TextField("Amount", text: $rightAmount)
@@ -98,11 +116,15 @@ struct ContentView: View {
                     Spacer()
                     Button(action: {
                         // DISPLAY EXCHANGE INFO SCREEN
+                        showExchangeInfo.toggle()
                     }, label: {
                         Image(systemName: "info.circle.fill")
                             .font(.largeTitle)
                             .foregroundStyle(.white)
                             .padding(.trailing)
+                    })
+                    .sheet(isPresented: $showExchangeInfo, content: {
+                        ExchangeInfo()
                     })
                 }
                 
