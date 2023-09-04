@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SelectCurrency: View {
     @Environment(\.dismiss) var dismiss
+    @State var gridLayout = [GridItem(), GridItem(), GridItem()]
     var body: some View {
         ZStack {
             //MARK: - BG Immage
@@ -31,16 +32,19 @@ struct SelectCurrency: View {
                     .multilineTextAlignment(.center)
                 
                 // Currency Icons
-                CurrencyIcon(text: "Copper Penny", image: .copperpenny)
+                LazyVGrid(columns: gridLayout, content: {
+                    ForEach(0..<5) { _ in
+                        CurrencyIcon(text: "Copper Penny", image: .copperpenny)
+                    }
+                })
                 
                 // Done Button
                 Button("Done") {
                     dismiss()
                 }
-                .font(.largeTitle)
+                .font(.largeTitle).padding(10)
                 .foregroundStyle(.white)
                 .background(.brown)
-                .padding(10)
                 .clipShape(RoundedRectangle(cornerRadius: 15.0))
             }
         }
