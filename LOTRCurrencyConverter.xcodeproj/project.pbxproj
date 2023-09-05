@@ -63,8 +63,8 @@
 		9600B1522AA367380035E2B6 /* LOTRCurrencyConverter */ = {
 			isa = PBXGroup;
 			children = (
-				969501A72AA55E9500F8BAF7 /* models */,
 				9600B1532AA367380035E2B6 /* LOTRCurrencyConverterApp.swift */,
+				969501A72AA55E9500F8BAF7 /* models */,
 				96F59C7F2AA4D02500C2BD9D /* views */,
 				9600B1572AA367460035E2B6 /* Assets.xcassets */,
 				9600B1592AA367460035E2B6 /* Preview Content */,

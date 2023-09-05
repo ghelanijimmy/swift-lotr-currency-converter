@@ -15,6 +15,16 @@ enum Currency: Double, CaseIterable {
     case goldPenny = 4
     case goldPiece = 1
     
+    func convert(amountString: String, to currency: Currency) -> String {
+        guard let startAmount = Double(amountString) else {
+            return ""
+        }
+        
+        let convertedAmount = (startAmount / self.rawValue) * currency.rawValue
+        
+        return convertedAmount > 0 ? String(format: "%.2f", convertedAmount) : ""
+    }
+    
     var image: ImageResource {
         switch self {
         case .copperPenny:
@@ -43,5 +53,59 @@ enum Currency: Double, CaseIterable {
         case .goldPiece:
             return "Gold Piece"
         }
+    }
+}
+
+struct ConversionSection: View {
+    @Binding var currency: Currency
+    @Binding var otherCurrency: Currency
+    @Binding var amount: String
+    @Binding var otherAmount: String
+    @State var tempAmount: String = ""
+    @State var typing: Bool = false
+    
+    @State var showSelectCurrency: Bool = false
+    
+    var body: some View {
+        VStack {
+            //MARK: - Currency
+            HStack {
+                
+                //MARK: - CURRENCY IMAGE
+                Image(currency.image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 33)
+                
+                //MARK: - CURENCY TEXT
+                Text(currency.text)
+                    .font(.headline)
+                    .foregroundStyle(.white)
+            } // END CURENCY
+            .padding(.bottom, -5)
+            .onTapGesture {
+                showSelectCurrency.toggle()
+            }
+            .sheet(isPresented: $showSelectCurrency, content: {
+                SelectCurrency(leftCurrency: $currency, rightCurrency: $otherCurrency)
+            })
+            
+            //MARK: - TEXT FIELD
+            TextField("Amount", text: $amount, onEditingChanged: { hasChanged in
+                typing = hasChanged
+                tempAmount = amount
+            })
+                .padding(7)
+                .background(Color(UIColor.systemGray6))
+                .cornerRadius(7)
+                .keyboardType(.decimalPad)
+                .onChange(of: typing ? amount : tempAmount) {
+                    otherAmount = currency.convert(amountString: amount, to: otherCurrency)
+                }
+                .onChange(of: currency) {
+                    amount = otherCurrency.convert(amountString: otherAmount, to: currency)
+                }
+            
+        } // END LEFT CONVERSION
     }
 }

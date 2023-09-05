@@ -9,14 +9,13 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var leftAmount = ""
-    @State var rightAmount = ""
+    @State var leftCurrency: Currency = (UserDefaults.standard.value(forKey: "leftCurrency") as? Currency ?? Currency.silverPiece)
+    @State var rightCurrency: Currency = (UserDefaults.standard.value(forKey: "rightCurrency") as? Currency ?? Currency.goldPiece)
     
-    @State var leftCurrency: Currency = .silverPiece
-    @State var rightCurrency: Currency = .goldPiece
-    
-    @State var showSelectCurrency: Bool = false
     @State var showExchangeInfo: Bool = false
+    
+    @State var leftAmount: String = ""
+    @State var rightAmount: String = ""
     
     var body: some View {
         ZStack {
@@ -39,36 +38,7 @@ struct ContentView: View {
                 //MARK: - CONVERSION SECTION
                 HStack {
                     //MARK: - LEFT CONVERSION
-                    VStack {
-                        //MARK: - Currency
-                        HStack {
-                            
-                            //MARK: - CURRENCY IMAGE
-                            Image(leftCurrency.image)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 33)
-                            
-                            //MARK: - CURENCY TEXT
-                            Text(leftCurrency.text)
-                                .font(.headline)
-                                .foregroundStyle(.white)
-                        } // END CURENCY
-                        .padding(.bottom, -5)
-                        .onTapGesture {
-                            showSelectCurrency.toggle()
-                        }
-                        .sheet(isPresented: $showSelectCurrency, content: {
-                            SelectCurrency(leftCurrency: $leftCurrency, rightCurrency: $rightCurrency)
-                        })
-                        
-                        //MARK: - TEXT FIELD
-                        TextField("Amount", text: $leftAmount)
-                            .padding(7)
-                            .background(Color(UIColor.systemGray6))
-                            .cornerRadius(7)
-                        
-                    } // END LEFT CONVERSION
+                    ConversionSection(currency: $leftCurrency, otherCurrency: $rightCurrency, amount: $leftAmount, otherAmount: $rightAmount)
                     
                     //MARK: - EQUAL SIGN
                     Image(systemName: "equal")
@@ -76,34 +46,7 @@ struct ContentView: View {
                         .font(.largeTitle)
                     
                     //MARK: - RIGHT CONVERSION
-                    VStack {
-                        //MARK: - Currency
-                        HStack {
-                            //MARK: - CURENCY TEXT
-                            Text(rightCurrency.text)
-                                .font(.headline)
-                                .foregroundStyle(.white)
-                            //MARK: - CURRENCY IMAGE
-                            Image(rightCurrency.image)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 33)
-                        } // END CURRENCY
-                        .padding(.bottom, -5)
-                        .onTapGesture {
-                            showSelectCurrency.toggle()
-                        }
-                        .sheet(isPresented: $showSelectCurrency, content: {
-                            SelectCurrency(leftCurrency: $leftCurrency, rightCurrency: $rightCurrency)
-                        })
-                        
-                        //MARK: - TEXT FIELD
-                        TextField("Amount", text: $rightAmount)
-                            .padding(7)
-                            .background(Color(UIColor.systemGray6))
-                            .cornerRadius(7)
-                            .multilineTextAlignment(.trailing)
-                    } // END RIGHT CONVERSION
+                    ConversionSection(currency: $rightCurrency, otherCurrency: $leftCurrency, amount: $rightAmount, otherAmount: $leftAmount)
                 } // END CONVERSION SECTION HSTACK
                 .padding()
                 .background(.black.opacity(0.5))

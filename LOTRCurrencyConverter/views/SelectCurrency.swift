@@ -11,8 +11,7 @@ struct SelectCurrency: View {
     @Environment(\.dismiss) var dismiss
     
     @Binding var leftCurrency: Currency
-    @Binding var rightCurrency: Currency
-    
+    @Binding var rightCurrency: Currency    
     
     var body: some View {
         ZStack {
